@@ -1,20 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Provider } from 'react-redux';
+import * as SecureStore from 'expo-secure-store';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import { store } from './src/redux/store';
+import { login } from './src/redux/AuthSlice';
+import { loadItems } from './src/redux/shoppingListSlice';
+import AuthScreen from './src/components/AuthScreen';
+import ShoppingList from './src/components/ShoppingList';
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const userJson = await SecureStore.getItemAsync('user');
+        const shoppingListJson = await SecureStore.getItemAsync('shoppingList');
+        
+        if (userJson) {
+          const user = JSON.parse(userJson);
+          store.dispatch(login(user));
+        }
+        
+        if (shoppingListJson) {
+          const items = JSON.parse(shoppingListJson);
+          store.dispatch(loadItems(items));
+        }
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+      }
+    };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    checkAuth();
+  }, []);
+
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#FF6B35' }, headerTintColor: 'white' }}>
+          <Stack.Screen 
+            name="Auth" 
+            component={AuthScreen} 
+            options={{ headerShown: false }} 
+          />
+          <Stack.Screen 
+            name="ShoppingList" 
+            component={ShoppingList} 
+            options={{ title: 'My Shopping List' }} 
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
+  )}
