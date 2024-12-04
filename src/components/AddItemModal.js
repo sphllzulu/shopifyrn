@@ -1,33 +1,182 @@
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   TouchableOpacity,
+//   Modal,
+//   StyleSheet
+// } from 'react-native';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { addItem } from '../redux/shoppingListSlice';
+// import { colors } from '../theme/colors';
+
+// const AddItemModal = ({ visible, onClose }) => {
+//   const [itemName, setItemName] = useState('');
+//   const [quantity, setQuantity] = useState('1');
+//   const [category, setCategory] = useState([])
+//   const dispatch = useDispatch();
+  
+//   // Get current user from Redux state
+//   const { user } = useSelector(state => state.auth);
+
+//   const handleAddItem = () => {
+//     if (itemName.trim()) {
+//       dispatch(addItem({
+//         name: itemName.trim(),
+//         quantity: parseInt(quantity) || 1,
+//         userId: user.userId
+//       }));
+      
+//       // Reset inputs and close modal
+//       setItemName('');
+//       setQuantity('1');
+//       onClose();
+//     }
+//   };
+
+//   return (
+//     <Modal
+//       animationType="slide"
+//       transparent={true}
+//       visible={visible}
+//       onRequestClose={onClose}
+//     >
+//       <View style={styles.modalContainer}>
+//         <View style={styles.modalContent}>
+//           <Text style={styles.modalTitle}>Add Shopping Item</Text>
+          
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Item Name"
+//             value={itemName}
+//             onChangeText={setItemName}
+//           />
+          
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Quantity"
+//             keyboardType="numeric"
+//             value={quantity}
+//             onChangeText={setQuantity}
+//           />
+          
+//           <View style={styles.buttonContainer}>
+//             <TouchableOpacity 
+//               style={styles.cancelButton} 
+//               onPress={onClose}
+//             >
+//               <Text style={styles.cancelButtonText}>Cancel</Text>
+//             </TouchableOpacity>
+            
+//             <TouchableOpacity 
+//               style={styles.addButton} 
+//               onPress={handleAddItem}
+//             >
+//               <Text style={styles.addButtonText}>Add</Text>
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+//       </View>
+//     </Modal>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   modalContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: 'rgba(0,0,0,0.5)'
+//   },
+//   modalContent: {
+//     width: '80%',
+//     backgroundColor: 'white',
+//     borderRadius: 10,
+//     padding: 20,
+//     alignItems: 'center'
+//   },
+//   modalTitle: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     marginBottom: 20,
+//     color: colors.primary
+//   },
+//   input: {
+//     width: '100%',
+//     borderWidth: 1,
+//     borderColor: colors.accent,
+//     borderRadius: 5,
+//     padding: 10,
+//     marginBottom: 15
+//   },
+//   buttonContainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     width: '100%'
+//   },
+//   cancelButton: {
+//     backgroundColor: colors.accent,
+//     padding: 10,
+//     borderRadius: 5,
+//     width: '48%',
+//     alignItems: 'center'
+//   },
+//   cancelButtonText: {
+//     color: 'white'
+//   },
+//   addButton: {
+//     backgroundColor: colors.primary,
+//     padding: 10,
+//     borderRadius: 5,
+//     width: '48%',
+//     alignItems: 'center'
+//   },
+//   addButtonText: {
+//     color: 'white'
+//   }
+// });
+
+// export default AddItemModal;
+
 
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  Modal, 
-  StyleSheet, 
-  Dimensions 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  
 } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { colors } from '../theme/colors';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../redux/shoppingListSlice';
+import { colors } from '../theme/colors';
+import {Picker} from '@react-native-picker/picker';
 
 const AddItemModal = ({ visible, onClose }) => {
   const [itemName, setItemName] = useState('');
   const [quantity, setQuantity] = useState('1');
+  const [category, setCategory] = useState('groceries'); // Default category
   const dispatch = useDispatch();
+  
+  // Get current user from Redux state
+  const { user } = useSelector(state => state.auth);
 
   const handleAddItem = () => {
     if (itemName.trim()) {
-      dispatch(addItem({ 
-        name: itemName,
-        quantity: parseInt(quantity) || 1
+      dispatch(addItem({
+        name: itemName.trim(),
+        quantity: parseInt(quantity) || 1,
+        userId: user.userId,
+        category // Added category to item
       }));
       
-      // Reset and close
+      // Reset inputs and close modal
       setItemName('');
       setQuantity('1');
+      setCategory('groceries'); // Reset category to default
       onClose();
     }
   };
@@ -39,8 +188,8 @@ const AddItemModal = ({ visible, onClose }) => {
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Add Shopping Item</Text>
           
           <TextInput
@@ -48,31 +197,41 @@ const AddItemModal = ({ visible, onClose }) => {
             placeholder="Item Name"
             value={itemName}
             onChangeText={setItemName}
-            placeholderTextColor={colors.accent}
           />
           
           <TextInput
             style={styles.input}
             placeholder="Quantity"
+            keyboardType="numeric"
             value={quantity}
             onChangeText={setQuantity}
-            keyboardType="numeric"
-            placeholderTextColor={colors.accent}
           />
+          
+          {/* Category Picker */}
+          <Text style={styles.label}>Category</Text>
+          <Picker
+            selectedValue={category}
+            style={styles.picker}
+            onValueChange={itemValue => setCategory(itemValue)}
+          >
+            <Picker.Item label="Groceries" value="groceries" />
+            <Picker.Item label="Toiletries" value="toiletries" />
+            <Picker.Item label="Household" value="household" />
+          </Picker>
           
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
-              style={[styles.button, styles.cancelButton]} 
+              style={styles.cancelButton} 
               onPress={onClose}
             >
-              <Text style={styles.buttonTextCancel}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
             
             <TouchableOpacity 
-              style={[styles.button, styles.addButton]} 
+              style={styles.addButton} 
               onPress={handleAddItem}
             >
-              <Text style={styles.buttonTextAdd}>Add Item</Text>
+              <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -82,67 +241,71 @@ const AddItemModal = ({ visible, onClose }) => {
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)'
   },
-  modalView: {
-    width: Dimensions.get('window').width - 40,
-    backgroundColor: colors.background,
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
+    alignItems: 'center'
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: 15
+    marginBottom: 20,
+    color: colors.primary
   },
   input: {
     width: '100%',
-    backgroundColor: colors.lightOrange,
-    padding: 10,
+    borderWidth: 1,
+    borderColor: colors.accent,
     borderRadius: 5,
-    marginBottom: 10,
-    color: colors.text
+    padding: 10,
+    marginBottom: 15
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: colors.text,
+    alignSelf: 'flex-start'
+  },
+  picker: {
+    width: '100%',
+    height: 50,
+    borderColor: colors.accent,
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 15
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%'
   },
-  button: {
-    borderRadius: 5,
-    padding: 10,
-    elevation: 2,
-    width: '48%'
-  },
   cancelButton: {
-    backgroundColor: colors.accent
+    backgroundColor: colors.accent,
+    padding: 10,
+    borderRadius: 5,
+    width: '48%',
+    alignItems: 'center'
+  },
+  cancelButtonText: {
+    color: 'white'
   },
   addButton: {
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
+    padding: 10,
+    borderRadius: 5,
+    width: '48%',
+    alignItems: 'center'
   },
-  buttonTextCancel: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold'
-  },
-  buttonTextAdd: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold'
+  addButtonText: {
+    color: 'white'
   }
 });
 
