@@ -1,34 +1,38 @@
-// // src/components/ShoppingList.js
-// import React, { useState } from 'react';
+// import React, { useState, useEffect } from 'react';
 // import { 
 //   View, 
 //   Text, 
 //   FlatList, 
 //   TouchableOpacity, 
 //   StyleSheet, 
-//   TextInput,
 //   Alert
 // } from 'react-native';
 // import { useDispatch, useSelector } from 'react-redux';
 // import { colors } from '../theme/colors';
 // import { 
-//   addItem, 
 //   togglePurchased, 
-//   removeItem 
+//   removeItem,
+//   initializeUserItems
 // } from '../redux/shoppingListSlice';
 // import { logout } from '../redux/AuthSlice';
+// import AddItemModal from './AddItemModal';
 
 // const ShoppingList = ({ navigation }) => {
-//   const [newItem, setNewItem] = useState('');
+//   const [isModalVisible, setIsModalVisible] = useState(false);
 //   const dispatch = useDispatch();
-//   const shoppingItems = useSelector(state => state.shoppingList.items);
+  
+//   // Get current user and shopping items from Redux state
+//   const { user } = useSelector(state => state.auth);
+//   const shoppingItems = useSelector(state => 
+//     state.shoppingList.items.filter(item => item.userId === user.userId)
+//   );
 
-//   const handleAddItem = () => {
-//     if (newItem.trim()) {
-//       dispatch(addItem({ name: newItem }));
-//       setNewItem('');
+//   // Initialize user-specific items when component mounts
+//   useEffect(() => {
+//     if (user) {
+//       dispatch(initializeUserItems({ userId: user.userId }));
 //     }
-//   };
+//   }, [user]);
 
 //   const handleLogout = () => {
 //     Alert.alert(
@@ -55,20 +59,33 @@
 //     <View style={styles.itemContainer}>
 //       <TouchableOpacity 
 //         style={styles.checkbox}
-//         onPress={() => dispatch(togglePurchased(item.id))}
+//         onPress={() => dispatch(togglePurchased({
+//           itemId: item.id, 
+//           userId: user.userId
+//         }))}
 //       >
 //         {item.purchased && <Text style={styles.checkmark}>✓</Text>}
 //       </TouchableOpacity>
-//       <Text 
-//         style={[
-//           styles.itemText, 
-//           item.purchased && styles.purchasedItem
-//         ]}
-//       >
-//         {item.name}
-//       </Text>
+//       <View style={styles.itemTextContainer}>
+//         <Text 
+//           style={[
+//             styles.itemText, 
+//             item.purchased && styles.purchasedItem
+//           ]}
+//         >
+//           {item.name}
+//         </Text>
+//         {item.quantity > 1 && (
+//           <Text style={styles.quantityText}>
+//             Qty: {item.quantity}
+//           </Text>
+//         )}
+//       </View>
 //       <TouchableOpacity 
-//         onPress={() => dispatch(removeItem(item.id))}
+//         onPress={() => dispatch(removeItem({
+//           itemId: item.id, 
+//           userId: user.userId
+//         }))}
 //       >
 //         <Text style={styles.deleteButton}>🗑️</Text>
 //       </TouchableOpacity>
@@ -77,21 +94,12 @@
 
 //   return (
 //     <View style={styles.container}>
-//       <View style={styles.inputContainer}>
-//         <TextInput
-//           style={styles.input}
-//           value={newItem}
-//           onChangeText={setNewItem}
-//           placeholder="Add new shopping item"
-//           placeholderTextColor={colors.accent}
-//         />
-//         <TouchableOpacity 
-//           style={styles.addButton} 
-//           onPress={handleAddItem}
-//         >
-//           <Text style={styles.addButtonText}>+</Text>
-//         </TouchableOpacity>
-//       </View>
+//       <TouchableOpacity 
+//         style={styles.addButton} 
+//         onPress={() => setIsModalVisible(true)}
+//       >
+//         <Text style={styles.addButtonText}>+ Add Item</Text>
+//       </TouchableOpacity>
       
 //       <FlatList
 //         data={shoppingItems}
@@ -110,6 +118,11 @@
 //       >
 //         <Text style={styles.logoutText}>Logout</Text>
 //       </TouchableOpacity>
+
+//       <AddItemModal 
+//         visible={isModalVisible}
+//         onClose={() => setIsModalVisible(false)}
+//       />
 //     </View>
 //   );
 // };
@@ -120,28 +133,16 @@
 //     backgroundColor: colors.background,
 //     padding: 20
 //   },
-//   inputContainer: {
-//     flexDirection: 'row',
-//     marginBottom: 20
-//   },
-//   input: {
-//     flex: 1,
-//     backgroundColor: colors.lightOrange,
-//     padding: 10,
-//     borderRadius: 5,
-//     marginRight: 10,
-//     color: colors.text
-//   },
 //   addButton: {
 //     backgroundColor: colors.primary,
-//     justifyContent: 'center',
-//     alignItems: 'center',
+//     padding: 15,
 //     borderRadius: 5,
-//     paddingHorizontal: 15
+//     alignItems: 'center',
+//     marginBottom: 20
 //   },
 //   addButtonText: {
 //     color: 'white',
-//     fontSize: 24
+//     fontWeight: 'bold'
 //   },
 //   itemContainer: {
 //     flexDirection: 'row',
@@ -150,6 +151,12 @@
 //     padding: 15,
 //     borderRadius: 5,
 //     marginBottom: 10
+//   },
+//   itemTextContainer: {
+//     flex: 1,
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center'
 //   },
 //   checkbox: {
 //     width: 24,
@@ -165,8 +172,13 @@
 //     fontWeight: 'bold'
 //   },
 //   itemText: {
-//     flex: 1,
-//     color: colors.text
+//     color: colors.text,
+//     flex: 1
+//   },
+//   quantityText: {
+//     color: colors.accent,
+//     fontSize: 12,
+//     marginLeft: 10
 //   },
 //   purchasedItem: {
 //     textDecorationLine: 'line-through',
@@ -198,8 +210,7 @@
 // export default ShoppingList;
 
 
-// src/components/ShoppingList.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -212,7 +223,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { colors } from '../theme/colors';
 import { 
   togglePurchased, 
-  removeItem 
+  removeItem,
+  initializeUserItems
 } from '../redux/shoppingListSlice';
 import { logout } from '../redux/AuthSlice';
 import AddItemModal from './AddItemModal';
@@ -220,7 +232,19 @@ import AddItemModal from './AddItemModal';
 const ShoppingList = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const shoppingItems = useSelector(state => state.shoppingList.items);
+
+  // Get current user and shopping items from Redux state
+  const { user } = useSelector(state => state.auth);
+  const shoppingItems = useSelector(state => 
+    state.shoppingList.items.filter(item => item.userId === user?.userId)
+  );
+
+  // Initialize user-specific items when component mounts
+  useEffect(() => {
+    if (user && user.userId) {
+      dispatch(initializeUserItems({ userId: user.userId }));
+    }
+  }, [user, dispatch]);
 
   const handleLogout = () => {
     Alert.alert(
@@ -247,28 +271,26 @@ const ShoppingList = ({ navigation }) => {
     <View style={styles.itemContainer}>
       <TouchableOpacity 
         style={styles.checkbox}
-        onPress={() => dispatch(togglePurchased(item.id))}
-      >
+        onPress={() => dispatch(togglePurchased({
+          itemId: item.id, 
+          userId: user.userId
+        }))}>
         {item.purchased && <Text style={styles.checkmark}>✓</Text>}
       </TouchableOpacity>
       <View style={styles.itemTextContainer}>
         <Text 
-          style={[
-            styles.itemText, 
-            item.purchased && styles.purchasedItem
-          ]}
-        >
+          style={[styles.itemText, item.purchased && styles.purchasedItem]}>
           {item.name}
         </Text>
         {item.quantity > 1 && (
-          <Text style={styles.quantityText}>
-            Qty: {item.quantity}
-          </Text>
+          <Text style={styles.quantityText}>Qty: {item.quantity}</Text>
         )}
       </View>
       <TouchableOpacity 
-        onPress={() => dispatch(removeItem(item.id))}
-      >
+        onPress={() => dispatch(removeItem({
+          itemId: item.id, 
+          userId: user.userId
+        }))}>
         <Text style={styles.deleteButton}>🗑️</Text>
       </TouchableOpacity>
     </View>
@@ -278,11 +300,10 @@ const ShoppingList = ({ navigation }) => {
     <View style={styles.container}>
       <TouchableOpacity 
         style={styles.addButton} 
-        onPress={() => setIsModalVisible(true)}
-      >
+        onPress={() => setIsModalVisible(true)}>
         <Text style={styles.addButtonText}>+ Add Item</Text>
       </TouchableOpacity>
-      
+
       <FlatList
         data={shoppingItems}
         renderItem={renderItem}
@@ -293,11 +314,10 @@ const ShoppingList = ({ navigation }) => {
           </View>
         }
       />
-      
+
       <TouchableOpacity 
         style={styles.logoutButton} 
-        onPress={handleLogout}
-      >
+        onPress={handleLogout}>
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
 
