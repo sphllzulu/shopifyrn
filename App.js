@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import * as SecureStore from 'expo-secure-store';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import { store } from './src/redux/store';
 import { login } from './src/redux/AuthSlice';
 import { loadItems } from './src/redux/shoppingListSlice';
@@ -54,3 +53,27 @@ export default function App() {
       </NavigationContainer>
     </Provider>
   )}
+
+// // App.js
+// import React, { useEffect, useState } from 'react';
+// import { Provider } from 'react-redux';
+// import { store } from './src/redux/store';
+// import { useSelector } from 'react-redux';
+// import * as SecureStore from 'expo-secure-store';
+
+// import AuthScreen from './src/components/AuthScreen';
+// import ShoppingListScreen from './src/components/ShoppingList';
+
+// const AppContent = () => {
+//   const { isAuthenticated } = useSelector(state => state.auth);
+
+//   return isAuthenticated ? <ShoppingListScreen /> : <AuthScreen />;
+// };
+
+// export default function App() {
+//   return (
+//     <Provider store={store}>
+//       <AppContent />
+//     </Provider>
+//   );
+// }
