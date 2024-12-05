@@ -1,4 +1,3 @@
-
 import { createSlice } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -23,6 +22,26 @@ const shoppingListSlice = createSlice({
       // Save user-specific shopping list
       AsyncStorage.setItem(`shoppingList_${userId}`, JSON.stringify(state.items));
     },
+    updateItem: (state, action) => {
+      const { itemId, userId, name, quantity, category } = action.payload;
+      const itemIndex = state.items.findIndex(
+        item => item.id === itemId && item.userId === userId
+      );
+
+      if (itemIndex !== -1) {
+        // Update the item with the new details
+        state.items[itemIndex] = {
+          ...state.items[itemIndex],
+          name: name || state.items[itemIndex].name,
+          quantity: quantity !== undefined ? quantity : state.items[itemIndex].quantity,
+          category: category || state.items[itemIndex].category
+        };
+
+        // Save updated user-specific shopping list
+        AsyncStorage.setItem(`shoppingList_${userId}`, JSON.stringify(state.items));
+      }
+    },
+    
     togglePurchased: (state, action) => {
       const { itemId, userId } = action.payload;
       const item = state.items.find(item => item.id === itemId);
@@ -65,6 +84,7 @@ const shoppingListSlice = createSlice({
 
 export const { 
   addItem, 
+  updateItem,
   togglePurchased, 
   removeItem, 
   loadItems,
