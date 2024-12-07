@@ -77,12 +77,12 @@ const ShoppingList = ({ navigation }) => {
           style={[styles.itemText, item.purchased && styles.purchasedItem]}>
           {item.name}
         </Text>
-        {item.quantity > 1 && (
+        {item.quantity > 0 && (
           <Text style={styles.quantityText}>Qty: {item.quantity}</Text>
         )}
         <Text style={styles.categoryText}>{item.category}</Text>
       </View>
-      
+
       <View style={styles.itemActions}>
         <TouchableOpacity 
           style={styles.editButton}
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   addButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.darkOrange,
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.secondary,
+    backgroundColor: '#967aa1',
     padding: 15,
     borderRadius: 5,
     marginBottom: 10
@@ -187,19 +187,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   itemText: {
-    color: colors.text
+    color: '#fff'
   },
   quantityText: {
-    color: colors.accent,
+    color: 'pink',
     fontSize: 12
   },
   categoryText: {
-    color: colors.accent,
+    color: 'whitesmoke',
     fontSize: 12
   },
   purchasedItem: {
     textDecorationLine: 'line-through',
-    color: colors.accent
+    color: 'pink'
   },
   editButton: {
     marginRight: 10
