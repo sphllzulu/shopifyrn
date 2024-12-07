@@ -1,10 +1,10 @@
 
 export const colors = {
-    background: '#FFF4E0',
-    primary: '#FF6B35',
+    background: '#22223b',
+    primary: '#4a4e69',
     secondary: '#F7B801',
-    accent: '#FF9F1C',
+    accent: '#9a8c98',
     text: '#262626',
-    lightOrange: '#FFDAB9',
-    darkOrange: '#FF5733'
+    lightOrange: '#f2e9e4',
+    darkOrange: '#c9ada7'
   };
