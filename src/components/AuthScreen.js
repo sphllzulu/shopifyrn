@@ -47,7 +47,7 @@ const AuthScreen = ({ navigation }) => {
     >
       <View style={styles.inner}>
         <Image
-          source={require('../../assets/shoppingListLogo.jpg')}
+          source={require('../../assets/shoppingList.jpg')}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.accent,
     padding: 15,
     borderRadius: 5,
     alignItems: 'center'
