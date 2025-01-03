@@ -118,7 +118,7 @@ export default function App() {
 
   async function loadFonts() {
     await Font.loadAsync({
-      Outfit: require('../shopify/assets/fonts/Outfit/Outfit-VariableFont_wght.ttf'), 
+      Outfit: require('./assets/fonts/Outfit/Outfit-VariableFont_wght.ttf'), 
     });
     setFontsLoaded(true);
   }
