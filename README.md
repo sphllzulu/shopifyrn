@@ -119,7 +119,7 @@ Fonts: Expo Fonts
 
 ## Developer Documentation
 Project Structure
-Copy
+```
 src/
 ├── components/            # React components
 │   ├── AuthScreen.js      # Login/Signup screen
@@ -131,6 +131,7 @@ src/
 │   └── store.js           # Redux store configuration
 ├── theme/                 # App theme (colors, fonts)
 └── App.js                 # Main application entry point
+```
 Redux Store
 The app uses Redux for state management, with the following slices:
 
@@ -209,58 +210,15 @@ Deleting Items:
 
 Users can remove items from the list.
 
-## User Guide
-Getting Started
-Launch the App:
-
-Open the app on your device or emulator.
-
-Login or Sign Up:
-
-If you’re a new user, sign up by entering a username and password.
-
-If you’re a returning user, log in with your credentials.
-
-Using the App
-Adding Items:
-
-Tap the + Add Item button.
-
-Enter the item name, quantity, and category.
-
-Tap Add to save the item.
-
-Editing Items:
-
-Tap the ✏️ icon next to the item you want to edit.
-
-Update the details in the modal and tap Update.
-
-Marking Items as Purchased:
-
-Tap the checkbox next to an item to mark it as purchased.
-
-Deleting Items:
-
-Tap the 🗑️ icon next to the item you want to delete.
-
-Logging Out:
-
-Tap the Logout button at the bottom of the shopping list screen.
-
-## Contributing
-Contributions are welcome! Please follow these steps:
-
-Fork the repository.
-
-Create a new branch for your feature or bugfix.
-
-Commit your changes.
-
-Submit a pull request.
 
 ## Dependencies
 React Native: Framework for building mobile apps.
+
+## Developer Documentation
+https://docs.google.com/document/d/1XqyB57sYgI-YwrGBHNB_FWuAsUl1rr7kyJ2iJG_NqjY/edit?usp=sharing
+
+##User Guide
+https://docs.google.com/document/d/1uISJJfDMXmcpGI4c5ytyQtE8KFoOoXZ0CRUeNSCCUL8/edit?usp=sharing
 
 Redux: State management library.
 
