@@ -10,6 +10,9 @@ Shopmate is a React Native mobile application that provides users with a simple 
 * Custom themed interface using the Outfit font family
 * Redux-powered state management
 * Modal interface for adding new items
+  
+## Screenshot
+![Image](https://github.com/user-attachments/assets/8fd1707f-f74b-434d-9c54-0991cb133882)
 
 ## Project Structure
 ```
